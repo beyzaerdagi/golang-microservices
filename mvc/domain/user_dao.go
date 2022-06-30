@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/beyzaerdagi/golang-microservices/mvc/utils"
@@ -9,11 +10,23 @@ import (
 
 var (
 	users = map[int64]*User{
-		123: {Id: 1, FirstName: "Beyza", LastName: "Erdagi", Email: "byzerdagi@gmail.com"},
+		123: {Id: 123, FirstName: "Beyza", LastName: "Erdagi", Email: "byzerdagi@gmail.com"},
 	}
+	UserDao userDaoInterface
 )
 
-func GetUser(userId int64) (*User, *utils.ApplicationError) {
+func init() {
+	UserDao = &userDao{}
+}
+
+type userDaoInterface interface {
+	GetUser(int64) (*User, *utils.ApplicationError)
+}
+
+type userDao struct{}
+
+func (u *userDao) GetUser(userId int64) (*User, *utils.ApplicationError) {
+	log.Println("we're accessing the database")
 	if user := users[userId]; user != nil {
 		return user, nil
 	}
